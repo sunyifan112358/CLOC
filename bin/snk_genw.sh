@@ -711,6 +711,10 @@ if [ "$__KSTATS" == "1" ] ; then
    echo "int main(int argc, char*argv[]){" > $__KSTATSF
 fi
 
+# If 32 bit mode
+__MODE=${11}
+echo "Mode " $__MODE
+
 # Intermediate files.
 __EXTRACL=${__TMPD}/extra.cl
 __KARGLIST=${__TMPD}/klist
@@ -842,6 +846,7 @@ __SEDCMD=" "
          NEXTI=6
       fi
       IFS=","
+      PaddingNumber=0
       for _val in $__ARGL ; do 
          parse_arg $_val
          if [ "$last_char" == "*" ] ; then 
@@ -849,6 +854,10 @@ __SEDCMD=" "
                echo "      uint64_t arg${NEXTI};"  >> $__CWRAP
             else
                echo "      ${simple_arg_type}* arg${NEXTI};"  >> $__CWRAP
+               if [ $__MODE == 32 ] ; then
+                   echo "      uint32_t padding${PaddingNumber};" >> $__CWRAP
+                   PaddingNumber=$(( PaddingNumber + 1 ))
+               fi
             fi
          else
             is_scalar $simple_arg_type
@@ -856,6 +865,10 @@ __SEDCMD=" "
                echo "      ${simple_arg_type} arg${NEXTI};"  >> $__CWRAP
             else
                echo "      ${simple_arg_type}* arg${NEXTI};"  >> $__CWRAP
+               if [ $__MODE == 32 ] ; then
+                   echo "      uint32_t padding${PaddingNumber};" >> $__CWRAP
+                   PaddingNumber=$(( PaddingNumber + 1 ))
+               fi
             fi
          fi
          NEXTI=$(( NEXTI + 1 ))
