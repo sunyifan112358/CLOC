@@ -713,7 +713,6 @@ fi
 
 # If 32 bit mode
 __MODE=${11}
-echo "Mode " $__MODE
 
 # Intermediate files.
 __EXTRACL=${__TMPD}/extra.cl
